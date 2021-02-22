@@ -1,0 +1,28 @@
+[package]
+name = "actix-loadtest"
+version = "0.1.0"
+authors = ["Thales Fragoso <thales.fragosoz@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix = { version = "0.10.0", default-features = false }
+actix-codec = "0.3.0"
+actix-web = { version = "3.3.2", default-features = false }
+actix-web-actors = "3.0.0"
+awc = {version = "2.0.3", default-features = false }
+tokio = "0.2.25"
+
+#actix = "0.11.0-beta.2"
+#actix-codec = "0.4.0-beta.1"
+#actix-web = { version = "4.0.0-beta.3", default-features = false }
+#actix-web-actors = "4.0.0-beta.2"
+#awc = {version = "3.0.0-beta.2", default-features = false }
+#tokio = { version = "1", features = ["time"] }
+
+anyhow = "1.0.38"
+log = "0.4.14"
+futures = "0.3.12"
+structopt = "0.3"
+pretty_env_logger = "0.4"
