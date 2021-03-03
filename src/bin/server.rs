@@ -1,12 +1,19 @@
 use std::time::{Duration, Instant};
 
 use actix::prelude::*;
+use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
+use anyhow::Result;
 
 /// How often heartbeat pings are sent
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(30);
 /// How long before lack of client response causes a timeout
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(60);
+
+/// do websocket handshake and start `MyWebSocket` actor
+async fn ws_index(r: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
+    ws::start(MyWebSocket::new(), &r, stream)
+}
 
 /// websocket connection is long running connection, it easier
 /// to handle with an actor
@@ -64,4 +71,22 @@ impl MyWebSocket {
             ctx.ping(b"");
         });
     }
+}
+
+#[actix_web::main]
+async fn main() -> Result<()> {
+    pretty_env_logger::init_timed();
+
+    HttpServer::new(|| {
+        App::new()
+            // enable logger
+            .wrap(middleware::Logger::default())
+            // websocket route
+            .service(web::resource("/ws/").route(web::get().to(ws_index)))
+    })
+    // start http server on 127.0.0.1:8080
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await?;
+    Ok(())
 }
